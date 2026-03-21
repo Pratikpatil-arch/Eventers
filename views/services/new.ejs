@@ -14,7 +14,7 @@
 ```
             <div class="card-body p-4">
                 
-                <form action="/events/<%= eventName.name %>/services" method="POST">
+                <form action="/events/<%= eventName.name %>/services" method="POST" class="needs-validation" novalidate>
                     
                     <!-- Service Type -->
                     <div class="mb-3">
@@ -38,6 +38,7 @@
                                name="service[phoneNumber]" 
                                placeholder="+91 9876543210" 
                                required>
+                                  <div class="valid-feedback">Phone number Looks Good</div>
                     </div>
 
                     <!-- Address -->
@@ -48,6 +49,7 @@
                                name="service[address]" 
                                placeholder="Enter service location" 
                                required>
+                                  <div class="valid-feedback">Address looks Good</div>
                     </div>
 
                     <!-- Charges -->
@@ -58,6 +60,7 @@
                                name="service[charges]" 
                                min="0" 
                                required>
+                                  <div class="valid-feedback">Charges are fine</div>
                     </div>
 
                     <!-- Key Features -->
@@ -73,7 +76,7 @@
                     <!-- Buttons -->
                     <div class="d-grid gap-2 mt-4">
                         <button class="btn btn-success btn-lg">Submit Service</button>
-                        <a href="/events/<%= eventName %>/providers" class="btn btn-secondary">Cancel</a>
+                        <a href="/events/<%= eventName.name %>/services" class="btn btn-secondary">Cancel</a>
                     </div>
 
                 </form>

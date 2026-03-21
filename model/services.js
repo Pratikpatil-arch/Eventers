@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Review = require("./review");
 
 // Service Schema
 const serviceSchema = new Schema({
@@ -8,24 +9,45 @@ const serviceSchema = new Schema({
         required: true
     },
     charges: {
-        type: Number
+        type: Number,
+         min: 0,
+         required: true,
     },
     address: {
-        type: String
+        type: String,
     },
     phoneNumber: {
-        type: String
+        type: String,
+         required: true,
     },
     keyFeatures: [
-        { type: String } // Array of strings for multiple features
+        { type: String
+         } // Array of strings for multiple features
     ],
     events: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Event' // This must exactly match the name of your Event model
         }
-    ]
+    ],
+      reviews:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+              ref: "Review",
+        }
+    ],
 });
+
+serviceSchema.post("findOneAndDelete", async (service) => {
+    if (service && service.reviews.length > 0) {
+        await Review.deleteMany({
+            _id: { $in: service.reviews }
+        });
+    }
+});
+
 const Service = mongoose.model('Service', serviceSchema);
+
+
 
 module.exports = Service ;

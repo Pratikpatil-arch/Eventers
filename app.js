@@ -3,17 +3,35 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dns = require("dns");
+const { serviceSchema, reviewSchema } = require("./schema.js");
 const methodOverride = require("method-override");
 const Event = require("./model/events");
 const Service = require("./model/services");
+const Review = require("./model/review");
 dns.setServers([
     '1.1.1.1',
     '8.8.8.8',
 ]);
 const path = require("path");
 const ejsMate = require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
+const events = require("./routes/events.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 
+const sessionOptions = {
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie:
+        {
+            expires:new Date(Date.now()+7*24*60*60*60),
+            maxAge:7*24*60*60*100,
+           httpOnly:true,
+        },
+  }
 
 
 
@@ -40,6 +58,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
+app.use( session(sessionOptions));
+app.use(flash());
+
+
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+})
 
 
 
@@ -151,90 +178,43 @@ app.use(express.static(path.join(__dirname, "/public")));
 // }); //service dummy
 
 
-
-
-
-
-app.get("/events", async (req, res) => {
-    let events = await Event.find({});
-    res.render("services/events.ejs", { events });
-});
-
-
-app.get("/events/:eventName/services", async (req, res) => {
-    const { eventName } = req.params;
-    const event = await Event.findOne({ name: eventName });
-    const services = await Service.find({ events: event._id });
-
-    res.render("services/index.ejs", { services: services, eventName: event });
-});
-
-app.get("/events/:eventName/services/new", async (req, res) => {
-    const { eventName } = req.params;
-    const event = await Event.findOne({ name: eventName });
-    const services = await Service.find({ events: event._id });
-    res.render("services/new.ejs", { services: services, eventName: event });
-});
-
-app.post("/events/:eventName/services", async (req, res) => {
-    const { eventName } = req.params;
-    const { service } = req.body;
-    const event = await Event.findOne({ name: eventName });
-    if (!event) {
-        return res.status(404).send("Event not found");
+const validateService = (req, res, next) => {
+    const { error } = serviceSchema.validate(req.body);
+    if (error) {
+        return res.send(error.details.map(e => e.message).join(", "));
     }
-    if (service.keyFeatures) {
-        service.keyFeatures = service.keyFeatures
-            .split(",")
-            .map(f => f.trim())
-            .filter(f => f.length > 0);
+    next();
+};
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const errMsg = error.details.map(el => el.message).join(", ");
+        throw new ExpressError(400, errMsg);
+    }
+    next();
+};
+
+app.use("/events", events);
+
+
+
+app.use((req, res, next) => {
+    next(new ExpressError(404, "Page Not Found"));
+});
+
+
+
+app.use((err, req, res, next) => {
+    if (err.name === "CastError") {
+        err.statusCode = 400;
+        err.message = "Invalid ID format";
     }
 
-    // 3. Link service to event
-    service.events = [event._id];
-    const newService = new Service(service);
-    await newService.save();
-    res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
+    let { statusCode = 500, message = "Something went wrong!" } = err;
+    // res.status(statusCode).send(message);
+    res.status(statusCode).render("error.ejs", { statusCode, message });
 });
-
-
-app.get("/events/:eventName/services/:service_id", async (req, res) => {
-    let { service_id, eventName } = req.params;
-    const service = await Service.findById(service_id);
-    res.render("services/show.ejs", { service });
-});
-
-app.get("/events/:eventName/services/:service_id/edit",async(req, res) => {
-    const { eventName, service_id } = req.params;
-
-    const service = await Service.findById(service_id);
-
-    if (!service) {
-        return res.status(404).send("Service not found");
-    }
-
-    res.render("services/edit.ejs", { service, eventName });
-});
-
-
-app.put("/events/:eventName/services/:service_id",async(req, res) => {
-     const { eventName, service_id } = req.params;  
-     const { service } = req.body;
-
-     await Service.findByIdAndUpdate(service_id, service);
-     res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
-});
-
-app.delete("/events/:eventName/services/:service_id",async(req, res) => {
-     const { eventName, service_id } = req.params;
-
-    await Service.findByIdAndDelete(service_id);
-
-    res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
-});
-
-
-
 
 
 
