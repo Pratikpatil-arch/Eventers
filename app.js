@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dns = require("dns");
+const { serviceSchema } = require("./schema.js");
 const methodOverride = require("method-override");
 const Event = require("./model/events");
 const Service = require("./model/services");
@@ -153,6 +154,15 @@ app.use(express.static(path.join(__dirname, "/public")));
 // }); //service dummy
 
 
+const validateService = (req, res, next) => {
+    const { error } = serviceSchema.validate(req.body);
+    
+    if (error) {
+        return res.send(error.details.map(e => e.message).join(", "));
+    }
+    
+    next();
+};
 
 
 
@@ -178,7 +188,7 @@ app.get("/events/:eventName/services/new",wrapAsync( async (req, res) => {
     res.render("services/new.ejs", { services: services, eventName: event });
 }));
 
-app.post("/events/:eventName/services",wrapAsync( async (req, res) => {
+app.post("/events/:eventName/services",validateService,wrapAsync( async (req, res) => {
     const { eventName } = req.params;
     const { service } = req.body;
     const event = await Event.findOne({ name: eventName });
@@ -203,7 +213,7 @@ app.post("/events/:eventName/services",wrapAsync( async (req, res) => {
 app.get("/events/:eventName/services/:service_id",wrapAsync( async (req, res) => {
     let { service_id, eventName } = req.params;
     const service = await Service.findById(service_id);
-    res.render("services/show.ejs", { service });
+    res.render("services/show.ejs", { service ,eventName});
 }));
 
 app.get("/events/:eventName/services/:service_id/edit",wrapAsync(async(req, res) => {
@@ -219,12 +229,29 @@ app.get("/events/:eventName/services/:service_id/edit",wrapAsync(async(req, res)
 }));
 
 
-app.put("/events/:eventName/services/:service_id",wrapAsync(async(req, res) => {
-     const { eventName, service_id } = req.params;  
-     const { service } = req.body;
+//Update Route
+app.put("/events/:eventName/services/:service_id",validateService,wrapAsync(async (req, res) => {
+    const { eventName, service_id } = req.params;
+    const { service } = req.body;
 
-     await Service.findByIdAndUpdate(service_id, service);
-     res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
+    // Convert keyFeatures (same as POST)
+    if (service.keyFeatures) {
+        service.keyFeatures = service.keyFeatures
+            .split(",")
+            .map(f => f.trim())
+            .filter(f => f.length > 0);
+    }
+
+    const updatedService = await Service.findByIdAndUpdate(
+        service_id,
+        service,
+        {   returnDocument: "after", runValidators: true }
+    );
+     if (!updatedService) {
+        return res.status(404).send("Service not found");
+    }
+
+    res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
 }));
 
 app.delete("/events/:eventName/services/:service_id",wrapAsync(async(req, res) => {

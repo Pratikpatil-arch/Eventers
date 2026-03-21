@@ -8,16 +8,21 @@ const serviceSchema = new Schema({
         required: true
     },
     charges: {
-        type: Number
+        type: Number,
+         min: 0,
+         required: true,
     },
     address: {
-        type: String
+        type: String,
+         required: true,
     },
     phoneNumber: {
-        type: String
+        type: String,
+         required: true,
     },
     keyFeatures: [
-        { type: String } // Array of strings for multiple features
+        { type: String
+         } // Array of strings for multiple features
     ],
     events: [
         {
