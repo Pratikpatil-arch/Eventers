@@ -16,10 +16,13 @@ const path = require("path");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const events = require("./routes/events.js");
+const eventsRouter = require("./routes/events.js");
 const session = require("express-session");
 const flash = require("connect-flash");
-
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./model/user.js");
+const userRouter = require("./routes/user.js");
 
 const sessionOptions = {
     secret: process.env.SESSION_KEY,
@@ -60,6 +63,14 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 app.use( session(sessionOptions));
 app.use(flash());
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req,res,next)=>{
@@ -195,7 +206,8 @@ const validateReview = (req, res, next) => {
     next();
 };
 
-app.use("/events", events);
+app.use("/events", eventsRouter);
+app.use("/",userRouter);
 
 
 
