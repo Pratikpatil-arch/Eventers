@@ -67,6 +67,7 @@ router.post("/:eventName/services", validateService, wrapAsync(async (req, res) 
     service.events = [event._id];
     const newService = new Service(service);
     await newService.save();
+    req.flash("success","New Service Created")
     res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
 }));
 
@@ -74,6 +75,10 @@ router.post("/:eventName/services", validateService, wrapAsync(async (req, res) 
 router.get("/:eventName/services/:service_id", wrapAsync(async (req, res) => {
     let { service_id, eventName } = req.params;
     const service = await Service.findById(service_id).populate("reviews");
+    if(!service){
+      req.flash("error","Service you requested for does not exist!");
+          return res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
+    }
     res.render("services/show.ejs", { service, eventName });
 }));
 
@@ -83,7 +88,8 @@ router.get("/:eventName/services/:service_id/edit", wrapAsync(async (req, res) =
     const service = await Service.findById(service_id);
 
     if (!service) {
-        return res.status(404).send("Service not found");
+        req.flash("error","Service you requested for does not exist!");
+        return res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
     }
 
     res.render("services/edit.ejs", { service, eventName });
@@ -109,9 +115,10 @@ router.put("/:eventName/services/:service_id", validateService, wrapAsync(async 
         { returnDocument: "after", runValidators: true }
     );
     if (!updatedService) {
-        return res.status(404).send("Service not found");
+         req.flash("error","Service you requested not found");
+        return  res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
     }
-
+     req.flash("success","Service Updated");
     res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
 }));
 
@@ -119,7 +126,7 @@ router.delete("/:eventName/services/:service_id", wrapAsync(async (req, res) => 
     const { eventName, service_id } = req.params;
 
     await Service.findByIdAndDelete(service_id);
-
+     req.flash("success","Service Deleted");
     res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
 }));
 
@@ -149,7 +156,7 @@ router.post("/:eventName/services/:service_id/reviews",
 
         await newReview.save();
         await service.save();
-
+         req.flash("success","New review Created");
         res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
     })
 );
@@ -164,6 +171,7 @@ router.delete("/:eventName/services/:service_id/reviews/:reviewId",
         });
         // delete review document
         await Review.findByIdAndDelete(reviewId);
+          req.flash("success","Review Deleted");
         res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
     })
 );

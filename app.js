@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dns = require("dns");
-const { serviceSchema ,reviewSchema } = require("./schema.js");
+const { serviceSchema, reviewSchema } = require("./schema.js");
 const methodOverride = require("method-override");
 const Event = require("./model/events");
 const Service = require("./model/services");
@@ -17,8 +17,21 @@ const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const events = require("./routes/events.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 
+const sessionOptions = {
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie:
+        {
+            expires:new Date(Date.now()+7*24*60*60*60),
+            maxAge:7*24*60*60*100,
+           httpOnly:true,
+        },
+  }
 
 
 
@@ -45,6 +58,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
+app.use( session(sessionOptions));
+app.use(flash());
+
+
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+})
 
 
 
@@ -158,11 +180,9 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 const validateService = (req, res, next) => {
     const { error } = serviceSchema.validate(req.body);
-    
     if (error) {
         return res.send(error.details.map(e => e.message).join(", "));
     }
-    
     next();
 };
 
@@ -172,11 +192,10 @@ const validateReview = (req, res, next) => {
         const errMsg = error.details.map(el => el.message).join(", ");
         throw new ExpressError(400, errMsg);
     }
-     next();
+    next();
 };
 
-app.use("/events",events);
-
+app.use("/events", events);
 
 
 
