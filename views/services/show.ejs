@@ -26,6 +26,11 @@
                 <!-- Details -->
                 <ul class="list-group list-group-flush text-start mb-3">
 
+                     <li class="list-group-item">
+                    <i class="fas fa-user-circle me-2 text-primary"></i>
+                        <%= service.owner.username || "No username provided" %>
+                    </li>
+
                     <li class="list-group-item">
                         <i class="fas fa-map-marker-alt me-2 text-primary"></i> 
                         <%= service.address || "No address provided" %>
@@ -55,6 +60,7 @@
 ```    <hr>
 
 <div class="col-8 offset-2">
+    <% if(currUser){%>
     <h4>Leave a Review</h4>
 
     <form action="/events/<%= encodeURIComponent(eventName) %>/services/<%= service._id %>/reviews" 
@@ -100,6 +106,7 @@
         </div>
 
         <button class="btn btn-outline-dark">Submit</button>
+         <%}%>
     </form>
 
     <hr>
@@ -116,7 +123,7 @@
                 <div class="card-body">
 
                     <!-- If no author field, keep static -->
-                    <h5 class="card-title">@User</h5>
+                    <h5 class="card-title">@<%=review.author.username %></h5>
 
                     <!-- Star display -->
                     <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>

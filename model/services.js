@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Review = require("./review");
+const User = require("./user");
 
 // Service Schema
 const serviceSchema = new Schema({
@@ -36,6 +37,10 @@ const serviceSchema = new Schema({
               ref: "Review",
         }
     ],
+     owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    },
 });
 
 serviceSchema.post("findOneAndDelete", async (service) => {

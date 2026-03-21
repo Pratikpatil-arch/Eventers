@@ -85,17 +85,18 @@
                                         <a href="/events/<%= eventName.name %>/services/<%= service._id %>" class="btn btn-sm btn-outline-primary flex-grow-1">
                                             <i class="fas fa-eye"></i> View
                                         </a>
-
+                                                <% if (currUser&&currUser._id.equals(service.owner._id)) { %>
                                         <a href="/events/<%= eventName.name %>/services/<%= service._id %>/edit" class="btn btn-sm btn-warning text-white">
                                             <i class="fas fa-edit"></i> 
                                         </a>
 
                                         <button type="submit" 
                                                 formmethod="POST" 
-                                                formaction="/events/<%= eventName.name %>/services/<%= service._id %>?_method=DELETE" 
+                                                formaction="/events/<%= eventName.name %>/services/<%=service._id %>?_method=DELETE" 
                                                 class="btn btn-sm btn-danger">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <%}%>
                                         
                                     </div>
                                 </div>
