@@ -3,10 +3,11 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dns = require("dns");
-const { serviceSchema } = require("./schema.js");
+const { serviceSchema ,reviewSchema } = require("./schema.js");
 const methodOverride = require("method-override");
 const Event = require("./model/events");
 const Service = require("./model/services");
+const Review = require("./model/review");
 dns.setServers([
     '1.1.1.1',
     '8.8.8.8',
@@ -164,6 +165,15 @@ const validateService = (req, res, next) => {
     next();
 };
 
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const errMsg = error.details.map(el => el.message).join(", ");
+        throw new ExpressError(400, errMsg);
+    }
+     next();
+};
+
 
 
 
@@ -212,7 +222,7 @@ app.post("/events/:eventName/services",validateService,wrapAsync( async (req, re
 
 app.get("/events/:eventName/services/:service_id",wrapAsync( async (req, res) => {
     let { service_id, eventName } = req.params;
-    const service = await Service.findById(service_id);
+    const service = await Service.findById(service_id).populate("reviews");
     res.render("services/show.ejs", { service ,eventName});
 }));
 
@@ -261,6 +271,51 @@ app.delete("/events/:eventName/services/:service_id",wrapAsync(async(req, res) =
 
     res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
 }));
+
+
+
+
+
+
+
+
+
+
+app.post("/events/:eventName/services/:service_id/reviews",
+    validateReview,
+    wrapAsync(async (req, res) => {
+        const { eventName, service_id } = req.params;
+
+        const service = await Service.findById(service_id);
+        if (!service) {
+            return res.status(404).send("Service not found");
+        }
+
+        const newReview = new Review(req.body.review);
+
+        // link review → service
+        service.reviews.push(newReview._id);
+
+        await newReview.save();
+        await service.save();
+
+        res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
+    })
+);
+
+
+app.delete("/events/:eventName/services/:service_id/reviews/:reviewId",
+    wrapAsync(async (req, res) => {
+        const { eventName, service_id, reviewId } = req.params;
+        // remove reference from service
+        await Service.findByIdAndUpdate(service_id, {
+            $pull: { reviews: reviewId }
+        });
+        // delete review document
+        await Review.findByIdAndDelete(reviewId);
+        res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
+    })
+);
 
 
 
