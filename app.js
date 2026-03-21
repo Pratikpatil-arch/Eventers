@@ -12,6 +12,8 @@ dns.setServers([
 ]);
 const path = require("path");
 const ejsMate = require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 
 
@@ -155,28 +157,28 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 
 
-app.get("/events", async (req, res) => {
+app.get("/events", wrapAsync(async (req, res) => {
     let events = await Event.find({});
     res.render("services/events.ejs", { events });
-});
+}));
 
 
-app.get("/events/:eventName/services", async (req, res) => {
+app.get("/events/:eventName/services", wrapAsync(async (req, res) => {
     const { eventName } = req.params;
     const event = await Event.findOne({ name: eventName });
     const services = await Service.find({ events: event._id });
 
     res.render("services/index.ejs", { services: services, eventName: event });
-});
+}));
 
-app.get("/events/:eventName/services/new", async (req, res) => {
+app.get("/events/:eventName/services/new",wrapAsync( async (req, res) => {
     const { eventName } = req.params;
     const event = await Event.findOne({ name: eventName });
     const services = await Service.find({ events: event._id });
     res.render("services/new.ejs", { services: services, eventName: event });
-});
+}));
 
-app.post("/events/:eventName/services", async (req, res) => {
+app.post("/events/:eventName/services",wrapAsync( async (req, res) => {
     const { eventName } = req.params;
     const { service } = req.body;
     const event = await Event.findOne({ name: eventName });
@@ -195,16 +197,16 @@ app.post("/events/:eventName/services", async (req, res) => {
     const newService = new Service(service);
     await newService.save();
     res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
-});
+}));
 
 
-app.get("/events/:eventName/services/:service_id", async (req, res) => {
+app.get("/events/:eventName/services/:service_id",wrapAsync( async (req, res) => {
     let { service_id, eventName } = req.params;
     const service = await Service.findById(service_id);
     res.render("services/show.ejs", { service });
-});
+}));
 
-app.get("/events/:eventName/services/:service_id/edit",async(req, res) => {
+app.get("/events/:eventName/services/:service_id/edit",wrapAsync(async(req, res) => {
     const { eventName, service_id } = req.params;
 
     const service = await Service.findById(service_id);
@@ -214,27 +216,44 @@ app.get("/events/:eventName/services/:service_id/edit",async(req, res) => {
     }
 
     res.render("services/edit.ejs", { service, eventName });
-});
+}));
 
 
-app.put("/events/:eventName/services/:service_id",async(req, res) => {
+app.put("/events/:eventName/services/:service_id",wrapAsync(async(req, res) => {
      const { eventName, service_id } = req.params;  
      const { service } = req.body;
 
      await Service.findByIdAndUpdate(service_id, service);
      res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
-});
+}));
 
-app.delete("/events/:eventName/services/:service_id",async(req, res) => {
+app.delete("/events/:eventName/services/:service_id",wrapAsync(async(req, res) => {
      const { eventName, service_id } = req.params;
 
     await Service.findByIdAndDelete(service_id);
 
     res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
+}));
+
+
+
+
+app.use((req, res, next) => {
+    next(new ExpressError(404, "Page Not Found"));
 });
 
 
 
+app.use((err, req, res, next) => {
+    if (err.name === "CastError") {
+        err.statusCode = 400;
+        err.message = "Invalid ID format";
+    }
+
+    let { statusCode = 500, message = "Something went wrong!" } = err;
+    // res.status(statusCode).send(message);
+    res.status(statusCode).render("error.ejs", { statusCode, message });
+});
 
 
 

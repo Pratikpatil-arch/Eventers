@@ -13,7 +13,7 @@
 
             <div class="card-body p-4">
                 
-                <form action="/events/<%= encodeURIComponent(eventName) %>/services/<%= service._id %>?_method=PUT" method="POST">
+                <form action="/events/<%= encodeURIComponent(eventName) %>/services/<%= service._id %>?_method=PUT" method="POST" class="form-label" novalidate>
                     
                     <!-- Service Type -->
                     <div class="mb-3">
