@@ -1,0 +1,203 @@
+<% layout('layouts/boilerplate') %>
+
+
+
+<div class="container my-5">
+
+```
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h1 class="display-5 fw-bold"><%= eventName.name %> Planning</h1>
+        <p class="lead text-muted">Manage services and estimate costs.</p>
+    </div>
+    <a href="/events/<%=eventName.name%>/services/new" class="btn btn-success btn-lg shadow">
+        <i class="fas fa-plus-circle me-2"></i> Add Service
+    </a>
+</div>
+
+<form action="/book-event" method="POST" id="bookingForm">
+    
+    <div class="row g-4">
+
+        <% const uniqueServices = [...new Set(services.map(s => s.type))]; %>
+
+        <% uniqueServices.forEach(serviceCategory => { %>
+            <div class="col-12 mb-4">
+                <h3 class="border-start border-4 border-primary ps-3 mb-3 text-uppercase text-secondary">
+                    <%= serviceCategory %>
+                </h3>
+                
+                <div class="row g-4">
+                    <% const servicesInCat = services.filter(s => s.type === serviceCategory); %>
+                    
+                    <% servicesInCat.forEach(service => { %>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm provider-card position-relative" onclick="toggleSelection(this)">
+                                <div class="card-body">
+                                    
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h5 class="fw-bold mb-1 text-truncate"><%= service.type %></h5>
+                                    </div>
+                                    
+                                    <div class="text-success small mb-3">
+                                        <i class="fas fa-check-circle me-1"></i> Verified Service
+                                    </div>
+
+                                    <hr class="my-2 opacity-25">
+
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div>
+                                            <span class="fs-5 fw-bold text-dark">
+                                                ₹<%= service.charges ? service.charges.toLocaleString('en-IN') : 0 %>
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="form-check">
+                                            <input class="form-check-input provider-checkbox" 
+                                                   type="checkbox" 
+                                                   name="selectedServices[]" 
+                                                   value="<%= service._id %>" 
+                                                   data-price="<%= service.charges || 0 %>"
+                                                   data-has-input1="false"
+                                                   data-has-input2="false">
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-2 text-muted small">
+                                        <i class="fas fa-map-marker-alt me-1"></i> <%= service.address || "Location not available" %>
+                                    </div>
+
+                                    <div class="mt-2 text-muted small">
+                                        <i class="fas fa-phone me-1"></i> <%= service.phoneNumber || "N/A" %>
+                                    </div>
+
+                                    <% if(service.keyFeatures && service.keyFeatures.length > 0) { %>
+                                        <div class="mt-3">
+                                            <% service.keyFeatures.forEach(f => { %>
+                                                <span class="badge bg-light text-dark border me-1"><%= f %></span>
+                                            <% }) %>
+                                        </div>
+                                    <% } %>
+
+                                    <div class="mt-3 d-flex gap-2" onclick="event.stopPropagation()">
+
+                                        <a href="/events/<%= eventName.name %>/services/<%= service._id %>" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+
+                                        <a href="/events/<%= eventName.name %>/services/<%= service._id %>/edit" class="btn btn-sm btn-warning text-white">
+                                            <i class="fas fa-edit"></i> 
+                                        </a>
+
+                                        <button type="submit" 
+                                                formmethod="POST" 
+                                                formaction="/events/<%= eventName.name %>/services/<%= service._id %>?_method=DELETE" 
+                                                class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        
+                                    </div>
+                                </div>
+                                <div class="selection-border position-absolute w-100 h-100 top-0 start-0 border border-2 border-primary rounded d-none" style="pointer-events: none;"></div>
+                            </div>
+                        </div>
+
+                    <% }) %>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Calculator -->
+    <div id="draggableCalculator" class="card shadow-lg border-0 bg-dark text-white" style="position: fixed; bottom: 30px; right: 30px; width: 300px; z-index: 9999;">
+        <div id="dragHeader" class="card-header bg-primary text-white cursor-move d-flex justify-content-between align-items-center py-2">
+            <span class="fw-bold"><i class="fas fa-calculator me-2"></i>Estimate</span>
+            <i class="fas fa-arrows-alt small"></i> 
+        </div>
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-white-50">Selected:</span>
+                <span class="fw-bold" id="countDisplay">0</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-white-50">Total:</span>
+                <h3 class="fw-bold text-warning mb-0" id="totalCostDisplay">₹0</h3>
+            </div>
+            <button type="submit" class="btn btn-light w-100 fw-bold disabled" id="bookBtn">
+                Book Now
+            </button>
+        </div>
+    </div>
+
+</form>
+```
+
+</div>
+
+<script>
+    const draggable = document.getElementById("draggableCalculator");
+    const header = document.getElementById("dragHeader");
+    let isDragging = false, offsetX, offsetY;
+
+    header.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - draggable.getBoundingClientRect().left;
+        offsetY = e.clientY - draggable.getBoundingClientRect().top;
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        draggable.style.left = `${e.clientX - offsetX}px`;
+        draggable.style.top = `${e.clientY - offsetY}px`;
+        draggable.style.bottom = "auto";
+        draggable.style.right = "auto";
+    });
+
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+    });
+
+    function toggleSelection(card) {
+        const checkbox = card.querySelector('.provider-checkbox');
+        const border = card.querySelector('.selection-border');
+
+        checkbox.checked = !checkbox.checked;
+
+        if(checkbox.checked) {
+            border.classList.remove('d-none');
+            card.classList.add('bg-light');
+        } else {
+            border.classList.add('d-none');
+            card.classList.remove('bg-light');
+        }
+
+        updateCalculator();
+    }
+
+    // 3. ADVANCED CALCULATOR LOGIC
+    function updateCalculator() {
+        let total = 0;
+        let count = 0;
+        const checkboxes = document.querySelectorAll('.provider-checkbox');
+        checkboxes.forEach(box => {
+            if(box.checked) {
+                const basePrice = parseInt(box.getAttribute('data-price'));
+                const hasInput1 = box.getAttribute('data-has-input1') === 'true';
+                const hasInput2 = box.getAttribute('data-has-input2') === 'true'; 
+                let multiplier1 = 1;
+                let multiplier2 = 1;
+                const card = box.closest('.provider-card');
+                if(hasInput1) { const input1 = card.querySelector('.qty-input-1'); if(input1 && input1.value) { multiplier1 = parseInt(input1.value); if(multiplier1 < 1) multiplier1 = 1; } }
+                if(hasInput2) { const input2 = card.querySelector('.qty-input-2'); if(input2 && input2.value) { multiplier2 = parseInt(input2.value); if(multiplier2 < 1) multiplier2 = 1; } }
+                total += (basePrice * multiplier1 * multiplier2);
+                count++;
+            }
+        });
+        document.getElementById('totalCostDisplay').innerText = "₹" + total.toLocaleString('en-IN');
+        document.getElementById('countDisplay').innerText = count;
+        const btn = document.getElementById('bookBtn');
+        if(count > 0) btn.classList.remove('disabled'); else btn.classList.add('disabled');
+    }
+</script>
+

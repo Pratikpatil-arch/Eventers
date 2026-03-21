@@ -1,0 +1,87 @@
+<% layout('layouts/boilerplate') %>
+
+
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white">
+                    <h3 class="fw-bold mb-0">Add New Service</h3>
+                </div>
+
+```
+            <div class="card-body p-4">
+                
+                <form action="/events/<%= eventName.name %>/services" method="POST">
+                    
+                    <!-- Service Type -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Service Category</label>
+                        <select class="form-select" name="service[type]" required>
+                            <option value="" disabled selected>Select Category...</option>
+                            <option value="Catering">Catering</option>
+                            <option value="Photography">Photography</option>
+                            <option value="Decoration">Decoration</option>
+                            <option value="Venue">Venue (Hotel/Hall)</option>
+                            <option value="Music/DJ">Music/DJ</option>
+                            <option value="Transport">Transport</option>
+                        </select>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Contact Phone</label>
+                        <input type="text" 
+                               class="form-control" 
+                               name="service[phoneNumber]" 
+                               placeholder="+91 9876543210" 
+                               required>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Address</label>
+                        <input type="text" 
+                               class="form-control" 
+                               name="service[address]" 
+                               placeholder="Enter service location" 
+                               required>
+                    </div>
+
+                    <!-- Charges -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Charges (₹)</label>
+                        <input type="number" 
+                               class="form-control" 
+                               name="service[charges]" 
+                               min="0" 
+                               required>
+                    </div>
+
+                    <!-- Key Features -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Key Features (Comma separated)</label>
+                        <input type="text" 
+                               class="form-control" 
+                               name="service[keyFeatures]" 
+                               placeholder="AC, Wifi, Veg Only">
+                        <small class="text-muted">Enter features separated by commas.</small>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn btn-success btn-lg">Submit Service</button>
+                        <a href="/events/<%= eventName %>/providers" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+</div>

@@ -1,0 +1,224 @@
+body{
+   font-family: "Plus Jakarta Sans", sans-serif !important;
+   display:flex;
+   flex-direction:column;
+   min-height:100vh !important;
+}
+
+.container{
+    flex:1;
+}
+
+.navbar {
+    height: 5rem;
+    background-color: white;
+}
+
+.nav-link {
+    color: #222222 !important;
+}
+
+
+.navbar {
+    height: 5rem !important;
+    background-color: white !important;
+}
+
+.fa-calendar{
+ font-size: 3rem !important;
+}
+
+.f-info {
+    display: flex;
+    height: 8rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    
+    /* This centers them horizontally */
+    justify-content: center;
+    
+    /* This aligns them vertically */
+    align-items: space-evenly; 
+    text-align:center;
+    
+    /* IMPORTANT: This creates the space between the 3 sections */
+}
+
+
+
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover {
+    text-decoration: underline;
+}
+
+.f-info-links {
+    width:100%;
+      vertical-align:middle;
+      display:flex;
+      align-items:center;
+      justify-content: center;
+        gap: 1.5rem;
+    
+}
+
+.f-info-socials{
+    width:100%;
+    font-size:1.2rem;
+    vertical-align:middle;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+     gap: 1.5rem;
+    
+}
+
+.f-info-brand{
+        display:flex;
+    align-items:center;
+    justify-content: center;
+    width:100%;
+
+}
+
+.event-img {
+    height: 200px;          /* same height for all images */
+    width: 100%;
+    object-fit: cover;      /* crop nicely, no stretching */
+    padding: 10px;          /* margin from all sides */
+    border-radius: 16px;     /* optional: smooth corners */
+}
+
+
+.nav-area {
+    display: flex;
+    justify-content: flex-start; /* keep links close */
+    gap: 4.5rem;                 /* control spacing between links */
+    
+    margin-left: 40%;            /* start at 40% of page */
+    width: 40%;                  /* end at 80% (40% + 40%) */
+}
+
+
+
+/* STAR RATING CSS */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; /* Allows hover effects to work backward */
+    justify-content: flex-end;
+}
+
+.star-rating input {
+    display: none; /* Hide the actual radio buttons */
+}
+
+.star-rating label {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #ffc107; /* Gold color for selected stars */
+}
+
+
+
+ .event-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Image Styling */
+    .event-img {
+        height: 250px;
+        object-fit: cover;
+        width: 100%;
+        transition: transform 0.5s ease;
+    }
+
+    /* Zoom Effect on Hover */
+    .event-card:hover .event-img {
+        transform: scale(1.05);
+    }
+
+    /* Overlay Effect */
+    .hover-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .event-card:hover .hover-overlay {
+        opacity: 1;
+    }
+
+    /* Typography Tweaks */
+    .letter-spacing-1 {
+        letter-spacing: 1px;
+    }
+
+
+
+    .cursor-move { cursor: move; user-select: none; }
+    .provider-card { cursor: pointer; transition: transform 0.2s; }
+    .provider-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important; }
+    .quantity-section { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+
+
+    .star-rating {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    /* Hide the actual radio buttons */
+    .star-rating input {
+        display: none;
+    }
+
+    /* Style the star icons */
+    .star-rating label {
+        font-size: 2rem;
+        color: #ccc; /* Gray by default */
+        cursor: pointer;
+        padding: 0 5px;
+        transition: color 0.2s;
+    }
+
+    /* Highlight logic */
+    /* 1. When hovering a star, highlight it */
+    .star-rating label:hover,
+    /* 2. Highlight all stars AFTER it (which are technically 'before' due to row-reverse) */
+    .star-rating label:hover ~ label,
+    /* 3. Keep stars highlighted when an input is checked */
+    .star-rating input:checked ~ label {
+        color: #ffc107; /* Bootstrap Warning Color (Gold) */
+    }
+    
+    /* Slight hover push effect */
+    .star-rating label:hover {
+        transform: scale(1.1);
+    }

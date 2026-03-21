@@ -1,0 +1,42 @@
+<% layout('layouts/boilerplate') %>
+
+
+<div class="container my-5 text-center">
+    <h1 class="display-4 fw-bold">Explore Our Events</h1>
+    <p class="lead text-muted">From intimate gatherings to grand celebrations, we make every moment unforgettable.</p>
+    <hr class="w-25 mx-auto mb-5">
+</div>
+
+<div class="container mb-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
+        <% for (let event of events) { %>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 event-card">
+                    
+                    <a href="/events/<%= event.name %>/providers" class="overflow-hidden position-relative">
+                        <img src="<%= event.image %>" class="card-img-top event-img" alt="<%= event.name %>">
+                        <div class="card-img-overlay">
+                            <span class="text-white fw-bold"></span>
+                        </div>
+                    </a>
+
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                        <h5 class="card-title fw-bold text-uppercase mb-3 letter-spacing-1">
+                            <%= event.name %>
+                        </h5>
+                        
+                        <p class="card-text text-muted small mb-4 flex-grow-1">
+                            <%= event.description.substring(0, 100) %>...
+                        </p>
+                        
+                        <a href="/events/<%= event.name %>/services" class="btn btn-outline-primary rounded-pill px-4 stretched-link">
+                            Plan This Event <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+</div>
