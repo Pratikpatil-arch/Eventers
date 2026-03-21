@@ -1,0 +1,171 @@
+const express = require("express");
+const router = express.Router();
+const wrapAsync = require("../utils/wrapAsync.js");
+const { serviceSchema ,reviewSchema } = require("../schema.js");
+const ExpressError = require("../utils/ExpressError.js");
+const Event = require("../model/events");
+const Service = require("../model/services");
+const Review = require("../model/review");
+
+
+const validateService = (req, res, next) => {
+    const { error } = serviceSchema.validate(req.body);
+    if (error) {
+        return res.send(error.details.map(e => e.message).join(", "));
+    }
+    next();
+};
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const errMsg = error.details.map(el => el.message).join(", ");
+        throw new ExpressError(400, errMsg);
+    }
+     next();
+};
+
+
+
+
+router.get("/", wrapAsync(async (req, res) => {
+    let events = await Event.find({});
+    res.render("services/events.ejs", { events });
+}));
+
+
+router.get("/:eventName/services", wrapAsync(async (req, res) => {
+    const { eventName } = req.params;
+    const event = await Event.findOne({ name: eventName });
+    const services = await Service.find({ events: event._id });
+
+    res.render("services/index.ejs", { services: services, eventName: event });
+}));
+
+router.get("/:eventName/services/new", wrapAsync(async (req, res) => {
+    const { eventName } = req.params;
+    const event = await Event.findOne({ name: eventName });
+    const services = await Service.find({ events: event._id });
+    res.render("services/new.ejs", { services: services, eventName: event });
+}));
+
+router.post("/:eventName/services", validateService, wrapAsync(async (req, res) => {
+    const { eventName } = req.params;
+    const { service } = req.body;
+    const event = await Event.findOne({ name: eventName });
+    if (!event) {
+        return res.status(404).send("Event not found");
+    }
+    if (service.keyFeatures) {
+        service.keyFeatures = service.keyFeatures
+            .split(",")
+            .map(f => f.trim())
+            .filter(f => f.length > 0);
+    }
+
+    // 3. Link service to event
+    service.events = [event._id];
+    const newService = new Service(service);
+    await newService.save();
+    res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
+}));
+
+
+router.get("/:eventName/services/:service_id", wrapAsync(async (req, res) => {
+    let { service_id, eventName } = req.params;
+    const service = await Service.findById(service_id).populate("reviews");
+    res.render("services/show.ejs", { service, eventName });
+}));
+
+router.get("/:eventName/services/:service_id/edit", wrapAsync(async (req, res) => {
+    const { eventName, service_id } = req.params;
+
+    const service = await Service.findById(service_id);
+
+    if (!service) {
+        return res.status(404).send("Service not found");
+    }
+
+    res.render("services/edit.ejs", { service, eventName });
+}));
+
+
+//Update Route
+router.put("/:eventName/services/:service_id", validateService, wrapAsync(async (req, res) => {
+    const { eventName, service_id } = req.params;
+    const { service } = req.body;
+
+    // Convert keyFeatures (same as POST)
+    if (service.keyFeatures) {
+        service.keyFeatures = service.keyFeatures
+            .split(",")
+            .map(f => f.trim())
+            .filter(f => f.length > 0);
+    }
+
+    const updatedService = await Service.findByIdAndUpdate(
+        service_id,
+        service,
+        { returnDocument: "after", runValidators: true }
+    );
+    if (!updatedService) {
+        return res.status(404).send("Service not found");
+    }
+
+    res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
+}));
+
+router.delete("/:eventName/services/:service_id", wrapAsync(async (req, res) => {
+    const { eventName, service_id } = req.params;
+
+    await Service.findByIdAndDelete(service_id);
+
+    res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
+}));
+
+
+
+
+
+
+
+
+
+
+router.post("/:eventName/services/:service_id/reviews",
+    validateReview,
+    wrapAsync(async (req, res) => {
+        const { eventName, service_id } = req.params;
+
+        const service = await Service.findById(service_id);
+        if (!service) {
+            return res.status(404).send("Service not found");
+        }
+
+        const newReview = new Review(req.body.review);
+
+        // link review → service
+        service.reviews.push(newReview._id);
+
+        await newReview.save();
+        await service.save();
+
+        res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
+    })
+);
+
+
+router.delete("/:eventName/services/:service_id/reviews/:reviewId",
+    wrapAsync(async (req, res) => {
+        const { eventName, service_id, reviewId } = req.params;
+        // remove reference from service
+        await Service.findByIdAndUpdate(service_id, {
+            $pull: { reviews: reviewId }
+        });
+        // delete review document
+        await Review.findByIdAndDelete(reviewId);
+        res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
+    })
+);
+
+module.exports = router;

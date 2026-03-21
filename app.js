@@ -16,6 +16,7 @@ const path = require("path");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const events = require("./routes/events.js");
 
 
 
@@ -174,148 +175,7 @@ const validateReview = (req, res, next) => {
      next();
 };
 
-
-
-
-app.get("/events", wrapAsync(async (req, res) => {
-    let events = await Event.find({});
-    res.render("services/events.ejs", { events });
-}));
-
-
-app.get("/events/:eventName/services", wrapAsync(async (req, res) => {
-    const { eventName } = req.params;
-    const event = await Event.findOne({ name: eventName });
-    const services = await Service.find({ events: event._id });
-
-    res.render("services/index.ejs", { services: services, eventName: event });
-}));
-
-app.get("/events/:eventName/services/new",wrapAsync( async (req, res) => {
-    const { eventName } = req.params;
-    const event = await Event.findOne({ name: eventName });
-    const services = await Service.find({ events: event._id });
-    res.render("services/new.ejs", { services: services, eventName: event });
-}));
-
-app.post("/events/:eventName/services",validateService,wrapAsync( async (req, res) => {
-    const { eventName } = req.params;
-    const { service } = req.body;
-    const event = await Event.findOne({ name: eventName });
-    if (!event) {
-        return res.status(404).send("Event not found");
-    }
-    if (service.keyFeatures) {
-        service.keyFeatures = service.keyFeatures
-            .split(",")
-            .map(f => f.trim())
-            .filter(f => f.length > 0);
-    }
-
-    // 3. Link service to event
-    service.events = [event._id];
-    const newService = new Service(service);
-    await newService.save();
-    res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
-}));
-
-
-app.get("/events/:eventName/services/:service_id",wrapAsync( async (req, res) => {
-    let { service_id, eventName } = req.params;
-    const service = await Service.findById(service_id).populate("reviews");
-    res.render("services/show.ejs", { service ,eventName});
-}));
-
-app.get("/events/:eventName/services/:service_id/edit",wrapAsync(async(req, res) => {
-    const { eventName, service_id } = req.params;
-
-    const service = await Service.findById(service_id);
-
-    if (!service) {
-        return res.status(404).send("Service not found");
-    }
-
-    res.render("services/edit.ejs", { service, eventName });
-}));
-
-
-//Update Route
-app.put("/events/:eventName/services/:service_id",validateService,wrapAsync(async (req, res) => {
-    const { eventName, service_id } = req.params;
-    const { service } = req.body;
-
-    // Convert keyFeatures (same as POST)
-    if (service.keyFeatures) {
-        service.keyFeatures = service.keyFeatures
-            .split(",")
-            .map(f => f.trim())
-            .filter(f => f.length > 0);
-    }
-
-    const updatedService = await Service.findByIdAndUpdate(
-        service_id,
-        service,
-        {   returnDocument: "after", runValidators: true }
-    );
-     if (!updatedService) {
-        return res.status(404).send("Service not found");
-    }
-
-    res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
-}));
-
-app.delete("/events/:eventName/services/:service_id",wrapAsync(async(req, res) => {
-     const { eventName, service_id } = req.params;
-
-    await Service.findByIdAndDelete(service_id);
-
-    res.redirect(`/events/${encodeURIComponent(eventName)}/services`)
-}));
-
-
-
-
-
-
-
-
-
-
-app.post("/events/:eventName/services/:service_id/reviews",
-    validateReview,
-    wrapAsync(async (req, res) => {
-        const { eventName, service_id } = req.params;
-
-        const service = await Service.findById(service_id);
-        if (!service) {
-            return res.status(404).send("Service not found");
-        }
-
-        const newReview = new Review(req.body.review);
-
-        // link review → service
-        service.reviews.push(newReview._id);
-
-        await newReview.save();
-        await service.save();
-
-        res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
-    })
-);
-
-
-app.delete("/events/:eventName/services/:service_id/reviews/:reviewId",
-    wrapAsync(async (req, res) => {
-        const { eventName, service_id, reviewId } = req.params;
-        // remove reference from service
-        await Service.findByIdAndUpdate(service_id, {
-            $pull: { reviews: reviewId }
-        });
-        // delete review document
-        await Review.findByIdAndDelete(reviewId);
-        res.redirect(`/events/${encodeURIComponent(eventName)}/services/${service_id}`);
-    })
-);
+app.use("/events",events);
 
 
 
