@@ -5,6 +5,8 @@ const ExpressError = require("./utils/ExpressError.js");
 const Service = require("./model/services.js");
 const Review = require("./model/review.js");
 
+const email = require("./utils/email.js");
+
 
 
 
@@ -79,3 +81,99 @@ module.exports.isReviewAuthor = async(req,res,next)=>{
      }
      next();
 }
+
+
+module.exports.sendUserEmail = async (user, services, totalPrice) => {
+  const servicesWithOwnerInfo = services.map((service) => ({
+    ...service.toObject(),
+    ownerEmail: service.owner?.email || "N/A",
+  }));
+
+  await email.send({
+    template: "bookingUser",
+    message: {
+      to: user.email,
+      subject: "Booking Confirmation",
+    },
+    locals: {
+      username: user.username,
+      services: servicesWithOwnerInfo,
+      totalPrice,
+    },
+  });
+};
+
+
+module.exports.sendOwnerEmails = async (user, services, totalPrice) => {
+  const grouped = {};
+
+  // group services by owner
+  for (let service of services) {
+    if (!service.owner) continue;
+
+    const ownerId = service.owner._id.toString();
+
+    if (!grouped[ownerId]) {
+      grouped[ownerId] = {
+        ownerEmail: service.owner.email,
+        services: [],
+      };
+    }
+
+    grouped[ownerId].services.push(service);
+  }
+
+  // send one email per owner
+  for (let ownerId in grouped) {
+    const group = grouped[ownerId];
+
+    await email.send({
+      template: "bookingOwner",
+      message: {
+        to: group.ownerEmail,
+        subject: "New Booking Received",
+      },
+      locals: {
+        username: user.username,
+        userEmail: user.email,
+        userPhone: user.phoneNumber,
+        services: group.services,   // ✅ now array
+        totalPrice,
+      },
+    });
+  }
+};
+
+
+// module.exports.sendUserEmail = async (user, services) => {
+//   await email.send({
+//     template: "bookingUser",
+//     message: {
+//       to: user.email,
+//       subject: "Booking Confirmation",
+//     },
+//     locals: {
+//       username: user.username,
+//       services,
+//     },
+//   });
+// };
+
+// module.exports.sendOwnerEmails = async (user, services) => {
+//   for (let service of services) {
+//     if (!service.owner || !service.owner.email) continue;
+
+//     await email.send({
+//       template: "bookingOwner",
+//       message: {
+//         to: service.owner.email,
+//         subject: "New Booking Received",
+//       },
+//       locals: {
+//         username: user.username,
+//         userEmail: user.email,
+//         service,
+//       },
+//     });
+//   }
+// };

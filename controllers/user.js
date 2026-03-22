@@ -13,8 +13,8 @@ module.exports.renderSignupForm= (req, res) => {
 
 module.exports.signup=async (req, res,next) => {
     try {
-        const { username, email, password, role } = req.body; // include role
-        const newUser = new User({ username, email, role }); // save role in DB
+        const { username, email, password, role ,phoneNumber} = req.body; // include role
+        const newUser = new User({ username, email, role ,phoneNumber }); // save role in DB
         const registeredUser = await User.register(newUser, password);
         req.login(registeredUser, (err) => {
             if (err) {

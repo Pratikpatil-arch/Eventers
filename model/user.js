@@ -12,6 +12,10 @@ const userSchema = new Schema({
         type: String,
         enum: ["client", "provider"], // only these two values allowed
         default: "client" // normal user by default
+    },
+     phoneNumber: {          //  ADD THIS
+        type: String,
+        required: true      
     }
 });
 

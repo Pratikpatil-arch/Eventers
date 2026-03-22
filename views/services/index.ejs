@@ -15,9 +15,8 @@
     </a>
 </div>
 
-<form action="/book-event" method="POST" id="bookingForm">
-    
-    <div class="row g-4">
+    <form action="/events/<%= eventName.name %>/book" method="POST">
+      <div class="row g-4">
 
         <% const uniqueServices = [...new Set(services.map(s => s.type))]; %>
 

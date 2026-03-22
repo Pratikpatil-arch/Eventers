@@ -1,0 +1,23 @@
+doctype html
+html
+  body
+    h2 Hello #{username},
+    p Your booking is confirmed. Here are your services:
+
+    h3 Total Price: ₹#{totalPrice}
+
+    each service in services
+      div(style="border:1px solid #ccc; margin:10px; padding:10px;")
+        h3 #{service.type}
+        p Charges: ₹#{service.charges}
+        p Address: #{service.address}
+        p Phone: #{service.phoneNumber}
+
+        p Owner Email: #{service.ownerEmail}
+        p Owner ID: #{service.ownerId}
+
+
+        if service.keyFeatures && service.keyFeatures.length
+          ul
+            each f in service.keyFeatures
+              li #{f}

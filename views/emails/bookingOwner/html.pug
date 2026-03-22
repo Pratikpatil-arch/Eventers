@@ -1,0 +1,19 @@
+doctype html
+html
+  body
+    h2 New Booking Received
+
+    p A user has booked your services.
+
+    p Client Name: #{username}
+    p Client Email: #{userEmail}
+    p Client Phone: #{userPhone}
+
+    h3 Services:
+
+    each service in services
+      div(style="border:1px solid #ccc; margin:10px; padding:10px;")
+        p Type: #{service.type}
+        p Charges: ₹#{service.charges}
+        p Phone: #{service.phoneNumber}
+        p Address: #{service.address}

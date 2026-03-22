@@ -1,0 +1,121 @@
+<%- layout("/layouts/boilerplate") %>
+
+<div class="container my-5">
+
+```
+<% if (currUser.role === "client") { %>
+
+    <h1 class="mb-4">My Booking History</h1>
+
+    <!-- Summary -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5>Total Bookings: <%= bookings.length %></h5>
+            <h5>Total Services Booked: <%= totalServices %></h5>
+        </div>
+    </div>
+
+    <% if (bookings.length === 0) { %>
+        <p>No bookings yet.</p>
+    <% } %>
+
+    <% bookings.forEach(booking => { %>
+
+        <div class="card mb-4 shadow">
+            <div class="card-header bg-dark text-white">
+                Booking Date: <%= new Date(booking.bookingDate).toLocaleString() %>
+            </div>
+
+            <div class="card-body">
+                <h5>Total Price: ₹<%= booking.totalPrice %></h5>
+
+                <div class="row">
+                    <% booking.services.forEach(service => { %>
+
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100 border">
+                                <div class="card-body">
+
+                                    <h6 class="fw-bold"><%= service.type %></h6>
+
+                                    <p><strong>Price:</strong> ₹<%= service.charges %></p>
+                                    <p><strong>Address:</strong> <%= service.address %></p>
+                                    <p><strong>Service Phone:</strong> <%= service.phoneNumber %></p>
+
+                                    <hr>
+
+                                    <% if (service.owner) { %>
+                                        <p><strong>Provider:</strong> <%= service.owner.username %></p>
+                                        <p><strong>Email:</strong> <%= service.owner.email %></p>
+                                        <p><strong>Phone:</strong> <%= service.owner.phoneNumber || "N/A" %></p>
+                                    <% } %>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    <% }) %>
+                </div>
+
+            </div>
+        </div>
+
+    <% }) %>
+
+<% } else if (currUser.role === "provider") { %>
+
+    <h1 class="mb-4">Clients You Served</h1>
+
+    <% if (bookings.length === 0) { %>
+        <p>No bookings yet.</p>
+    <% } %>
+
+    <% bookings.forEach(booking => { %>
+
+        <div class="card mb-4 shadow">
+
+            <div class="card-header bg-dark text-white">
+                Booking Date: <%= new Date(booking.bookingDate).toLocaleString() %>
+            </div>
+
+            <div class="card-body">
+
+                <!-- Client Info -->
+                <h5>Client Details</h5>
+                <p><strong>Name:</strong> <%= booking.client.username %></p>
+                <p><strong>Email:</strong> <%= booking.client.email %></p>
+                <p><strong>Phone:</strong> <%= booking.client.phoneNumber || "N/A" %></p>
+
+                <hr>
+
+                <!-- Provider's Services -->
+                <h5>Your Services</h5>
+
+                <div class="row">
+                    <% booking.services.forEach(service => { %>
+
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100 border">
+                                <div class="card-body">
+
+                                    <h6><%= service.type %></h6>
+                                    <p>₹<%= service.charges %></p>
+                                    <p><%= service.address %></p>
+                                    <p><%= service.phoneNumber %></p>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    <% }) %>
+                </div>
+
+            </div>
+        </div>
+
+    <% }) %>
+
+<% } %>
+```
+
+</div>

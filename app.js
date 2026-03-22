@@ -23,6 +23,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./model/user.js");
 const userRouter = require("./routes/user.js");
+const bookingRouter = require("./routes/booking.js");
 
 const sessionOptions = {
     secret: process.env.SESSION_KEY,
@@ -209,6 +210,7 @@ const validateReview = (req, res, next) => {
 
 app.use("/events", eventsRouter);
 app.use("/",userRouter);
+app.use("/",bookingRouter);
 
 
 
