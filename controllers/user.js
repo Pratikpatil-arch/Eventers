@@ -24,7 +24,7 @@ module.exports.signup=async (req, res,next) => {
             res.redirect("/events");
         })
     } catch (e) {
-        req.flash("error", e.message);
+        req.flash("error","Unable to Signup!");
         res.redirect("/signup");
     }
 }
