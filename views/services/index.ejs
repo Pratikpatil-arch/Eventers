@@ -10,9 +10,11 @@
         <h1 class="display-5 fw-bold"><%= eventName.name %> Planning</h1>
         <p class="lead text-muted">Manage services and estimate costs.</p>
     </div>
+    <% if (currUser && currUser.role == "provider") { %>
     <a href="/events/<%=eventName.name%>/services/new" class="btn btn-success btn-lg shadow">
         <i class="fas fa-plus-circle me-2"></i> Add Service
     </a>
+    <%}%>
 </div>
 
     <form action="/events/<%= eventName.name %>/book" method="POST">
@@ -108,7 +110,7 @@
             </div>
         <% }) %>
     </div>
-
+<% if (currUser && currUser.role !== "provider") { %>
     <!-- Calculator -->
     <div id="draggableCalculator" class="card shadow-lg border-0 bg-dark text-white" style="position: fixed; bottom: 30px; right: 30px; width: 300px; z-index: 9999;">
         <div id="dragHeader" class="card-header bg-primary text-white cursor-move d-flex justify-content-between align-items-center py-2">
@@ -129,7 +131,7 @@
             </button>
         </div>
     </div>
-
+ <%}%>
 </form>
 ```
 
