@@ -1,4 +1,7 @@
 {
+  "engines":{
+    "node":"v20.20.1"
+  },
   "name": "eventers",
   "version": "1.0.0",
   "main": "index.js",

@@ -222,3 +222,16 @@ body{
     .star-rating label:hover {
         transform: scale(1.1);
     }
+
+    #navbarNav{
+      opacity:0.7;
+     }
+     #navbarNav:hover{
+      opacity:1;
+     }
+     #bolds{
+      opacity:0.7;
+     }
+     #bolds{
+      opacity:1;
+     }

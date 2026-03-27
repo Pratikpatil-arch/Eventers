@@ -211,6 +211,9 @@ const validateReview = (req, res, next) => {
 app.use("/events", eventsRouter);
 app.use("/",userRouter);
 app.use("/",bookingRouter);
+app.get("/",(req,res)=>{
+    res.redirect("/events");
+})
 
 
 

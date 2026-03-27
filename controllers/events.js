@@ -59,7 +59,7 @@ module.exports.showServices =async (req, res) => {
           return res.redirect(`/events/${encodeURIComponent(eventName)}/services`);
     }
     console.log(service);
-    res.render("services/show.ejs", { service, eventName });
+    res.render("services/show.ejs", { service, eventName , currUser : req.user});
 }
 
 module.exports.renderEditServices=async (req, res) => {

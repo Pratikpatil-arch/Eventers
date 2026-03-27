@@ -132,12 +132,13 @@
                         <%= review.comment %>
                     </p>
 
+                    <% if(currUser && review.author._id.equals(currUser._id)){%>
                     <!-- Delete -->
                     <form action="/events/<%= encodeURIComponent(eventName) %>/services/<%= service._id %>/reviews/<%= review._id %>?_method=DELETE"
                           method="POST">
                         <button class="btn btn-dark btn-sm">Delete</button>
                     </form>
-
+                     <%}%>
                 </div>
             </div>
         <% }) %>
