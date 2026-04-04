@@ -41,6 +41,9 @@ const serviceSchema = new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
     },
+    serviceName:{
+        type:String,
+    }
 });
 
 serviceSchema.post("findOneAndDelete", async (service) => {

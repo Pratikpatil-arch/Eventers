@@ -28,7 +28,9 @@ module.exports.serviceSchema = Joi.object({
 
         events: Joi.array().items(
             Joi.string().hex().length(24)
-        )
+        ),
+
+        serviceName : Joi.string().allow("", null),
 
     }).required(),
 });
