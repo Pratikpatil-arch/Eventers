@@ -41,6 +41,8 @@ const sessionOptions = {
 
 const MONGO_URL = process.env.MONGO_URL;
 const PORT = process.env.PORT || 9000;
+const AWS_KEY= process.env.ALS_KEY;
+const AWS_REGION= process.env.AWS_REGION;
 
 const connectDb = async () => {
     await mongoose.connect(MONGO_URL);
@@ -213,6 +215,9 @@ app.use("/",userRouter);
 app.use("/",bookingRouter);
 app.get("/",(req,res)=>{
     res.redirect("/events");
+})
+app.get("/map",(req,res)=>{
+    res.render("static/map.ejs", { AWS_KEY,AWS_REGION });
 })
 
 

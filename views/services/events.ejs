@@ -14,7 +14,7 @@
             <div class="col">
                 <div class="card h-100 shadow-sm border-0 event-card">
                     
-                    <a href="/events/<%= event.name %>/providers" class="overflow-hidden position-relative">
+                    <a href="/events/<%= event.name %>/services" class="overflow-hidden position-relative">
                         <img src="<%= event.image %>" class="card-img-top event-img" alt="<%= event.name %>">
                         <div class="card-img-overlay">
                             <span class="text-white fw-bold"></span>
@@ -30,9 +30,7 @@
                             <%= event.description.substring(0, 100) %>...
                         </p>
                         
-                        <a href="/events/<%= event.name %>/services" class="btn btn-outline-primary rounded-pill px-4 stretched-link">
-                            Plan This Event <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
+                       
                     </div>
                 </div>
             </div>

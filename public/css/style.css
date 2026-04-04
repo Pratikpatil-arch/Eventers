@@ -235,3 +235,21 @@ body{
      #bolds{
       opacity:1;
      }
+
+
+
+     .city-link {
+    background: rgba(55, 76, 231, 0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.city-link:hover {
+    background: rgb(55, 76, 231);
+    color: white !important;
+}
+
+.city-link:hover i {
+    color: white;
+}
