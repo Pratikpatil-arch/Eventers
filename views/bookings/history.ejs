@@ -1,122 +1,96 @@
 <%- layout("/layouts/boilerplate") %>
 
-<div class="container my-5">
-
+<div class="w-100 px-4 my-4">
 
 <% if (currUser.role === "client") { %>
 
-    <h1 class="mb-4">My Booking History</h1>
+    <h2 class="mb-3 fs-4">My Booking History</h2>
 
-    <!-- Summary -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <h5>Total Bookings: <%= bookings.length %></h5>
-            <h5>Total Services Booked: <%= totalServices %></h5>
+    <div class="card mb-3 shadow-sm border-light d-inline-block">
+        <div class="card-body py-2 px-3 d-flex gap-4 text-nowrap">
+            <h6 class="mb-0 text-muted small">Total Bookings: <span class="text-dark fw-bold"><%= bookings.length %></span></h6>
+            <h6 class="mb-0 text-muted small">Total Services Booked: <span class="text-dark fw-bold"><%= totalServices %></span></h6>
         </div>
     </div>
 
     <% if (bookings.length === 0) { %>
-        <p>No bookings yet.</p>
+        <p class="text-muted small">No bookings yet.</p>
     <% } %>
 
-    <% bookings.forEach(booking => { %>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
+        <% bookings.forEach(booking => { %>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-light">
+                    <div class="card-header bg-info text-dark py-1 px-3 small text-nowrap text-truncate">
+                        <strong>Time:</strong> <%= new Date(booking.bookingDate).toLocaleString() %>
+                    </div>
 
-        <div class="card mb-4 shadow">
-            <div class="card-header bg-dark text-white">
-                Booking Date: <%= new Date(booking.bookingDate).toLocaleString() %>
-            </div>
-
-            <div class="card-body">
-                <h5>Total Price: ₹<%= booking.totalPrice %></h5>
-
-                <div class="row">
-                    <% booking.services.forEach(service => { %>
-
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="card h-100 border">
-                                <div class="card-body">
-
-                                    <h6 class="fw-bold"><%= service.type %></h6>
-                                    
-                                     <p><strong>Service Name:</strong> <%= service.serviceName %></p>
-                                    <p><strong>Price:</strong> ₹<%= service.charges %></p>
-                                    <p><strong>Address:</strong> <%= service.address %></p>
-                                    <p><strong>Service Phone:</strong> <%= service.phoneNumber %></p>
-
-                                    <hr>
-
-                                    <% if (service.owner) { %>
-                                        <p><strong>Provider:</strong> <%= service.owner.username %></p>
-                                        <p><strong>Email:</strong> <%= service.owner.email %></p>
-                                        <p><strong>Phone:</strong> <%= service.owner.phoneNumber || "N/A" %></p>
-                                    <% } %>
-
+                    <div class="card-body p-2 bg-light-subtle">
+                        <div class="d-flex flex-column gap-2">
+                            <% booking.services.forEach(service => { %>
+                                <div class="card border small shadow-2xs">
+                                    <div class="card-body p-2 bg-white text-nowrap text-truncate">
+                                        <h6 class="fw-bold text-primary mb-1"><%= service.type %></h6>
+                                        
+                                        <% if (service.owner) { %>
+                                            <div class="border-top pt-1 mt-1 text-muted" style="font-size: 0.75rem;">
+                                                <p class="mb-0 text-truncate"><strong>Provider:</strong> <%= service.owner.username %></p>
+                                                <p class="mb-0 text-truncate"><strong>Email:</strong> <%= service.owner.email %></p>
+                                                <p class="mb-0"><strong>Phone:</strong> <%= service.phoneNumber %></p>
+                                            </div>
+                                        <% } else { %>
+                                            <p class="text-muted small mb-0">No provider info available</p>
+                                        <% } %>
+                                    </div>
                                 </div>
-                            </div>
+                            <% }) %>
                         </div>
-
-                    <% }) %>
+                    </div>
                 </div>
-
             </div>
-        </div>
-
-    <% }) %>
+        <% }) %>
+    </div>
 
 <% } else if (currUser.role === "provider") { %>
 
-    <h1 class="mb-4">Clients You Served</h1>
+    <h2 class="mb-3 fs-4">Clients You Served</h2>
 
     <% if (bookings.length === 0) { %>
-        <p>No bookings yet.</p>
+        <p class="text-muted small">No bookings yet.</p>
     <% } %>
 
-    <% bookings.forEach(booking => { %>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
+        <% bookings.forEach(booking => { %>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-light">
+                    <div class="card-header bg-info text-white py-1 px-3 small text-nowrap text-truncate">
+                        <strong>Time:</strong> <%= new Date(booking.bookingDate).toLocaleString() %>
+                    </div>
 
-        <div class="card mb-4 shadow">
-
-            <div class="card-header bg-dark text-white">
-                Booking Date: <%= new Date(booking.bookingDate).toLocaleString() %>
-            </div>
-
-            <div class="card-body">
-
-                <!-- Client Info -->
-                <h5>Client Details</h5>
-                <p><strong>Name:</strong> <%= booking.client.username %></p>
-                <p><strong>Email:</strong> <%= booking.client.email %></p>
-                <p><strong>Phone:</strong> <%= booking.client.phoneNumber || "N/A" %></p>
-
-                <hr>
-
-                <!-- Provider's Services -->
-                <h5>Your Services</h5>
-
-                <div class="row">
-                    <% booking.services.forEach(service => { %>
-
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="card h-100 border">
-                                <div class="card-body">
-
-                                    <h6><%= service.type %></h6>
-                                    <p>₹<%= service.charges %></p>
-                                    <p><%= service.address %></p>
-                                    <p><%= service.phoneNumber %></p>
-
-                                </div>
-                            </div>
+                    <div class="card-body p-3 bg-white d-flex flex-column gap-2 small">
+                        <div class="mb-1 text-nowrap text-truncate">
+                            <h6 class="fw-bold text-secondary mb-2" style="font-size: 0.8rem; text-transform: uppercase; tracking: 0.5px;">Client Details</h6>
+                            <p class="mb-1"><strong>Name:</strong> <%= booking.client.username %></p>
+                            <p class="mb-1 text-truncate"><strong>Email:</strong> <%= booking.client.email %></p>
+                            <p class="mb-2"><strong>Phone:</strong> <%= booking.client.phoneNumber || "N/A" %></p>
                         </div>
 
-                    <% }) %>
+                        <div class="border-top pt-2">
+                            <span class="text-muted d-block mb-1" style="font-size: 0.7rem;">SERVICES PROVIDED:</span>
+                            <div class="d-flex flex-wrap gap-1">
+                                <% booking.services.forEach(service => { %>
+                                    <span class="badge px-2 py-1" style="background:#4274D9; font-size: 0.7rem;">
+                                        <%= service.type %>
+                                    </span>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
-        </div>
-
-    <% }) %>
+        <% }) %>
+    </div>
 
 <% } %>
-
 
 </div>

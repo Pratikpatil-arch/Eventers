@@ -54,6 +54,7 @@
                                             </span>
                                         </div>
                                         
+                                        <% if (currUser && currUser.role !== "provider") { %>
                                         <div class="form-check">
                                             <input class="form-check-input provider-checkbox" 
                                                    type="checkbox" 
@@ -63,6 +64,7 @@
                                                    data-has-input1="false"
                                                    data-has-input2="false">
                                         </div>
+                                        <% } %>
                                     </div>
 
                                     <div class="mt-2 text-muted small">
@@ -83,7 +85,7 @@
 
                                     <div class="mt-3 d-flex gap-2" onclick="event.stopPropagation()">
 
-                                        <a href="/events/<%= eventName.name %>/services/<%= service._id %>" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                        <a href="/events/<%= eventName.name %>/services/<%= service._id %>" class="btn view-butn btn-sm btn-outline-primary">
                                             <i class="fas fa-eye"></i> View
                                         </a>
                                                 <% if (currUser&&currUser._id.equals(service.owner._id)) { %>

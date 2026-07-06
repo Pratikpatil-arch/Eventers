@@ -13,7 +13,7 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item ms-4"><a class="nav-link active" href="/events">Events</a></li>
+        <li class="nav-item ms-4"><a class="nav-link" href="/events">Events</a></li>
         <li class="nav-item ms-5"><a class="nav-link" href="/network">Our Network</a></li>
         <li class="nav-item ms-5"><a class="nav-link" href="/aboutus">About us</a></li>
          <% if(currUser){%>
@@ -27,13 +27,13 @@
         </li>
       </ul>
 
-      <div class="navbar-nav ms-auto" id="bolds">
+      <div class="navbar-nav  ms-auto" id="bolds">
         <% if(!currUser){%>
-          <a class="nav-link" href="/signup"><b>Sign up</b></a>
-          <a class="nav-link" href="/login"><b>Log in</b></a>
+          <a class="nav-link loggers" href="/signup"><b>Sign Up</b></a>
+          <a class="nav-link loggers " href="/login"><b>Log In</b></a>
           <%}%>
             <%if(currUser){%>
-              <a class="nav-link" href="/logout"><b>Log out</b></a>
+              <a class="nav-link loggers" href="/logout"><b>Log out</b></a>
               <%}%>
       </div>
     </div>
