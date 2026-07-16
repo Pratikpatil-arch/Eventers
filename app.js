@@ -42,7 +42,7 @@ const sessionOptions = {
 const MONGO_URL = process.env.MONGO_URL;
 const PORT = process.env.PORT || 9000;
 const AWS_KEY= process.env.ALS_KEY;
-const AWS_REGION= process.env.ALS_REGION;
+const AWS_REGION= process.env.AWS_REGION;
 
 const connectDb = async () => {
     await mongoose.connect(MONGO_URL);
