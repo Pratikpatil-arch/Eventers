@@ -1,3 +1,121 @@
+<style>
+  @media (max-width: 767.98px) {
+    /* Navbar container */
+    .navbar.navbar-expand-md {
+        padding: 0.5rem 0;
+    }
+
+    .navbar-brand.ms-3 {
+        margin-left: 0.5rem !important;
+    }
+
+    .navbar-toggler {
+        margin-right: 0.75rem;
+        padding: 0.35rem 0.6rem;
+        border: none;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    /* Collapsed menu panel */
+    .collapse.navbar-collapse {
+        background: #ffffff;
+        margin-top: 0.5rem;
+        padding: 0.5rem 0.5rem 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    /* Nav links list — remove the large left-margins that were spacing things for desktop */
+    .navbar-nav {
+        width: 100%;
+    }
+
+    .navbar-nav .nav-item {
+        margin-left: 0 !important;
+        border-bottom: 1px solid #f2f2f2;
+    }
+
+    .navbar-nav .nav-item:last-of-type {
+        border-bottom: none;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-nav .nav-item.d-flex.align-items-center {
+        display: block !important;
+    }
+
+    .city-link {
+        display: inline-flex !important;
+        padding: 0.5rem 0.75rem !important;
+        width: auto;
+    }
+
+    /* Auth buttons (Sign Up / Log In / Log Out) */
+    #bolds.navbar-nav.ms-auto {
+        margin-left: 0 !important;
+        margin-top: 0.75rem;
+        flex-direction: row;
+        gap: 0.6rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid #eee;
+    }
+
+    #bolds .loggers {
+        margin-left: 0 !important;
+        flex: 1;
+        justify-content: center;
+        font-size: 0.85rem;
+        height: 38px;
+    }
+
+    #navbarNav {
+        opacity: 1;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .navbar-nav .nav-link {
+        font-size: 0.9rem;
+        padding: 0.65rem 0.4rem !important;
+    }
+
+    #bolds .loggers {
+        font-size: 0.78rem;
+        padding: 0 0.75rem;
+    }
+}
+@media (max-width: 767.98px) {
+    .city-link {
+        display: flex !important;
+        padding: 0.75rem 0.5rem !important;
+        width: 100%;
+        background: none !important;
+        border-radius: 0 !important;
+    }
+
+    .city-link:hover {
+        background: none !important;
+        color: inherit !important;
+    }
+
+    .city-link:hover i {
+        color: inherit !important;
+    }
+}
+</style>
+
+
+
+
 <nav class="navbar navbar-expand-md border-bottom sticky-top">
   <div class="container-fluid">
 
@@ -39,3 +157,4 @@
     </div>
   </div>
 </nav>
+

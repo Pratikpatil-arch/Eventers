@@ -1,3 +1,35 @@
+<style>
+    @media (max-width: 767.98px) {
+    .alert.alert-dismissible.fade.show.col-6.offset-3 {
+        width: 90% !important;
+        max-width: 90% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        float: none;
+        margin-top: 1rem !important;
+        padding: 0.65rem 2.5rem 0.65rem 0.85rem;
+        font-size: 0.85rem;
+    }
+
+    .alert .btn-close {
+        padding: 0.65rem;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .alert.alert-dismissible.fade.show.col-6.offset-3 {
+        width: 94% !important;
+        max-width: 94% !important;
+        font-size: 0.78rem;
+        padding: 0.55rem 2.25rem 0.55rem 0.75rem;
+    }
+}
+</style>
+
+
+
+
 <% if(success && success.length){ %>
 <div class="alert alert-success alert-dismissible fade show col-6 offset-3 mt-4 text-center" role="alert">
     

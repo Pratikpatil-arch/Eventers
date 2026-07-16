@@ -1,3 +1,73 @@
+<style>
+     @media (max-width: 767.98px) {
+    /* Header */
+    .container.my-5.text-center h1.display-4 {
+        font-size: 1.8rem;
+    }
+
+    .container.my-5.text-center p.lead {
+        font-size: 0.9rem;
+        padding: 0 0.5rem;
+    }
+
+    .container.my-5.text-center hr.w-25 {
+        margin-bottom: 2rem !important;
+    }
+
+    /* Keep 1 card per row, just tighten gutter */
+    .row.row-cols-1.row-cols-md-2.row-cols-lg-3 {
+        --bs-gutter-y: 1.25rem;
+    }
+
+    /* Card image */
+    .event-card .event-img {
+        height: 200px;
+    }
+
+    /* Card body */
+    .event-card .card-body.p-4 {
+        padding: 1.25rem !important;
+    }
+
+    .event-card .card-title {
+        font-size: 1.05rem;
+    }
+
+    .event-card .card-text {
+        font-size: 0.85rem;
+    }
+
+    .event-card {
+        border-radius: 12px;
+    }
+
+    .event-card:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .event-card .event-img {
+        height: 180px;
+    }
+
+    .container.my-5.text-center h1.display-4 {
+        font-size: 1.5rem;
+    }
+}
+
+
+
+
+
+
+</style>
+
+
+
+
+
 <% layout('layouts/boilerplate') %>
 
 

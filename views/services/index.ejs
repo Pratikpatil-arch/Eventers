@@ -1,3 +1,181 @@
+<style>
+    @media (max-width: 767.98px) {
+    /* Force 2 cards per row */
+    .row.g-4 > .col-md-6.col-lg-4 {
+        flex: 0 0 auto;
+        width: 50% !important;
+    }
+
+    .row.g-4 {
+        --bs-gutter-x: 0.6rem;
+        --bs-gutter-y: 0.6rem;
+    }
+
+    /* Page header */
+    .container.my-5 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-5 {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-5 h1.display-5 {
+        font-size: 1.5rem;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-5 p.lead {
+        font-size: 0.8rem;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-5 .btn.btn-lg {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
+        width: auto;
+    }
+
+    /* Category headings */
+    h3.border-start.border-4.border-primary {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Provider cards — compact, fixed height feel */
+    .provider-card .card-body {
+        padding: 0.55rem;
+    }
+
+    .provider-card h5.fw-bold {
+        font-size: 0.72rem;
+        margin-bottom: 0.2rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .provider-card .fs-5 {
+        font-size: 0.78rem !important;
+    }
+
+    .provider-card .small {
+        font-size: 0.58rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .provider-card .text-success.small {
+        margin-bottom: 0.3rem !important;
+    }
+
+    .provider-card .badge {
+        font-size: 0.5rem;
+        padding: 0.15rem 0.3rem;
+        margin-bottom: 0.15rem;
+    }
+
+    .provider-card hr {
+        margin: 0.25rem 0;
+    }
+
+    .provider-card .form-check-input {
+        width: 0.85rem;
+        height: 0.85rem;
+    }
+
+    /* Hide key feature badges + phone line on mobile to save vertical space */
+    .provider-card .mt-3:has(.badge) {
+        display: none;
+    }
+
+    /* Action buttons — one compact row, icon-only */
+    .provider-card .mt-3.d-flex.gap-2 {
+        flex-wrap: nowrap;
+        gap: 0.3rem !important;
+        margin-top: 0.5rem !important;
+    }
+
+    .provider-card .view-butn {
+        margin-right: 0 !important;
+        flex: 1 1 auto;
+        font-size: 0.6rem;
+        padding: 0.25rem 0.3rem;
+    }
+
+    .provider-card .view-butn span,
+    .provider-card .view-butn {
+        white-space: nowrap;
+    }
+
+    .provider-card .mt-3.d-flex.gap-2 .btn-warning,
+    .provider-card .mt-3.d-flex.gap-2 .btn-danger {
+        flex: 0 0 auto;
+        font-size: 0.6rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    /* Calculator */
+    #draggableCalculator {
+        width: 220px !important;
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+
+    #draggableCalculator .card-header {
+        padding: 0.4rem 0.65rem !important;
+        font-size: 0.8rem;
+    }
+
+    #draggableCalculator .card-body {
+        padding: 0.65rem 0.75rem;
+    }
+
+    #draggableCalculator #totalCostDisplay {
+        font-size: 1.1rem;
+    }
+
+    #draggableCalculator #bookBtn {
+        font-size: 0.8rem;
+        padding: 0.4rem;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .provider-card .card-body {
+        padding: 0.45rem;
+    }
+
+    .provider-card h5.fw-bold {
+        font-size: 0.65rem;
+    }
+
+    .provider-card .small {
+        font-size: 0.55rem !important;
+    }
+
+    .provider-card .view-butn,
+    .provider-card .mt-3.d-flex.gap-2 .btn-warning,
+    .provider-card .mt-3.d-flex.gap-2 .btn-danger {
+        font-size: 0.55rem;
+        padding: 0.2rem 0.3rem;
+    }
+
+    #draggableCalculator {
+        width: 190px !important;
+        right: 10px !important;
+        bottom: 10px !important;
+    }
+}
+</style>
+
+
+
+
+
 <% layout('layouts/boilerplate') %>
 
 

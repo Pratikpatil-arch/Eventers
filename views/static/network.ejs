@@ -1,3 +1,92 @@
+<style>
+  /* 2 cards per row on mobile, shrunk down */
+@media (max-width: 767.98px) {
+    .row.g-4 {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+
+    .col-md-6.col-lg-4 {
+        flex: 0 0 auto;
+        width: 50% !important; /* force 2 per row */
+    }
+
+    .service-card .card-body {
+        padding: 0.75rem;
+    }
+
+    .service-card h5.fw-bold {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem !important;
+        line-height: 1.2;
+    }
+
+    .service-card .badge {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.5rem;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .service-card p.text-muted {
+        font-size: 0.7rem;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .service-card p.text-muted i {
+        font-size: 0.7rem;
+        margin-right: 0.3rem !important;
+    }
+
+    .service-card hr {
+        margin: 0.5rem 0;
+    }
+
+    .service-card p.mb-1,
+    .service-card p.mb-3 {
+        font-size: 0.7rem;
+        margin-bottom: 0.35rem !important;
+    }
+
+    .service-card p.mb-1 strong {
+        font-size: 0.7rem;
+    }
+
+    .service-card a {
+        font-size: 0.7rem;
+        word-break: break-all;
+    }
+
+    .service-card:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .col-md-6.col-lg-4 {
+        width: 50% !important;
+    }
+
+    .service-card .card-body {
+        padding: 0.6rem;
+    }
+
+    .service-card h5.fw-bold {
+        font-size: 0.75rem;
+    }
+
+    .service-card p.text-muted,
+    .service-card p.mb-1,
+    .service-card p.mb-3,
+    .service-card a {
+        font-size: 0.65rem;
+    }
+}
+</style>
+
+
+
+
 <%- layout("/layouts/boilerplate") %>
 
 <div class="container my-5">
@@ -36,14 +125,14 @@
             </p>
 
             <!-- Price -->
-            <p class="mb-2">
+            <!-- <p class="mb-2">
               <strong>Charges:</strong> ₹<%= service.charges %>
-            </p>
+            </p> -->
 
             <!-- Phone -->
-            <p class="mb-3">
+            <!-- <p class="mb-3">
               <strong>Phone:</strong> <%= service.phoneNumber %>
-            </p>
+            </p> -->
 
             <hr>
 

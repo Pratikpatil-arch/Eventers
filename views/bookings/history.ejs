@@ -1,3 +1,129 @@
+<style>
+    @media (max-width: 767.98px) {
+    .w-100.px-4.my-4 {
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    h2.mb-3.fs-4 {
+        font-size: 1.15rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Stats card (client view) */
+    .card.mb-3.shadow-sm.border-light.d-inline-block {
+        width: 100%;
+        display: block !important;
+    }
+
+    .card.mb-3.shadow-sm.border-light .card-body.py-2.px-3 {
+        flex-direction: column;
+        gap: 0.35rem !important;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .card.mb-3.shadow-sm.border-light .card-body h6.small {
+        font-size: 0.72rem;
+    }
+
+    /* Grid — 2 booking cards per row */
+    .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-xl-4 {
+        --bs-gutter-x: 0.5rem;
+        --bs-gutter-y: 0.5rem;
+    }
+
+    .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-xl-4 > .col {
+        flex: 0 0 auto;
+        width: 50% !important;
+    }
+
+    /* Booking card header */
+    .card-header.bg-info {
+        padding: 0.35rem 0.5rem !important;
+        font-size: 0.62rem;
+    }
+
+    /* Client view — nested service cards */
+    .card-body.p-2.bg-light-subtle {
+        padding: 0.4rem !important;
+    }
+
+    .card-body .d-flex.flex-column.gap-2 {
+        gap: 0.4rem !important;
+    }
+
+    .card.border.small.shadow-2xs .card-body {
+        padding: 0.4rem !important;
+    }
+
+    .card.border.small.shadow-2xs h6.fw-bold {
+        font-size: 0.68rem;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .card.border.small.shadow-2xs .border-top {
+        font-size: 0.62rem !important;
+        padding-top: 0.3rem !important;
+        margin-top: 0.3rem !important;
+    }
+
+    /* Provider view — client details card */
+    .card-body.p-3.bg-white {
+        padding: 0.5rem !important;
+        font-size: 0.68rem;
+    }
+
+    .card-body.p-3.bg-white h6.fw-bold {
+        font-size: 0.66rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    .card-body.p-3.bg-white p {
+        font-size: 0.68rem;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .card-body.p-3.bg-white .border-top {
+        padding-top: 0.4rem !important;
+    }
+
+    .card-body.p-3.bg-white span.text-muted {
+        font-size: 0.6rem !important;
+    }
+
+    .card-body.p-3.bg-white .badge {
+        font-size: 0.58rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-xl-4 > .col {
+        width: 100% !important;
+    }
+
+    .card-header.bg-info {
+        font-size: 0.6rem;
+    }
+
+    .card.border.small.shadow-2xs h6.fw-bold,
+    .card-body.p-3.bg-white h6.fw-bold {
+        font-size: 0.62rem;
+    }
+
+    .card-body.p-3.bg-white p {
+        font-size: 0.64rem;
+    }
+}
+</style>
+
+
+
+
+
 <%- layout("/layouts/boilerplate") %>
 
 <div class="w-100 px-4 my-4">
