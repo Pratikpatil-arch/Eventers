@@ -214,9 +214,9 @@ app.use("/",bookingRouter);
 app.get("/",(req,res)=>{
     res.redirect("/events");
 })
-app.get("/map",(req,res)=>{
-    res.render("static/map.ejs");
-})
+// app.get("/map",(req,res)=>{
+//     res.render("static/map.ejs");
+// })
 
 
 
